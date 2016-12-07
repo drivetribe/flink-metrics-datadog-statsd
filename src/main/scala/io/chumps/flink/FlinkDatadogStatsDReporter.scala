@@ -26,9 +26,10 @@ object ReporterFunctions {
   val LOG = LoggerFactory.getLogger(getClass)
 
   val DefaultMetricName = "metric"
+  val HostRegex = """(\d{1,3}).(\d{1,3}).(\d{1,3}).(\d{1,3})""".r
 
   def extract(pattern: String, label: String): (String, Map[String, String]) = {
-    val fragments = label.split('.')
+    val fragments = HostRegex.replaceAllIn(label, """ip-$1-$2-$3-$4""").split('.')
     val tags = pattern.split('.').zip(fragments).toMap
     val metricName = fragments.drop(tags.size).mkString(".")
 
@@ -99,7 +100,8 @@ class FlinkDatadogStatsDReporter extends AbstractReporter with Scheduled {
 
   val LOG = LoggerFactory.getLogger(getClass)
 
-  override def filterCharacters(input: String): String = input.replaceAll(":", "-")
+  override def filterCharacters(input: String): String =
+    input.replaceAll(":", "-")
 
   override def close(): Unit = {
     closed = true

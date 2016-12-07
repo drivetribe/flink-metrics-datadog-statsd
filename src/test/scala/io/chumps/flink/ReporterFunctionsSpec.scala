@@ -30,6 +30,12 @@ class ReporterFunctionsSpec extends FlatSpec with Matchers {
     )
   }
 
+  it should "detect IP addresses and replace `.` with `-` before gathering the tags" in {
+    extract("host.bar.baz", "123.132.231.123.some_bar.some_baz.count") should equal(
+      ("count", Map("host" -> "ip-123-132-231-123", "bar" -> "some_bar", "baz" -> "some_baz"))
+    )
+  }
+
   "The `gaugeDatagram` function" should "not produce a datagram if the provided `Gauge` has a `null` value" in {
     val g = new Gauge[String] { def getValue: String = null }
 
