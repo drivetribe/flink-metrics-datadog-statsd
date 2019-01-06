@@ -8,6 +8,7 @@
 .settings
 .ensime
 .ensime_cache
+.metals
 *.iml
 bin
 lib_managed
